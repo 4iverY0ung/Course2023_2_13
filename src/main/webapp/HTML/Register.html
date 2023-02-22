@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+    <script type="text/javascript" src="../js/jquery-3.6.0.js"></script>
+    <script type="text/javascript">
+        $(function (){
+
+        })
+
+        function register(){
+            var name=$("#name").val()
+            var password=$("#password").val()
+            var identify=$("#selector").val()
+
+            if (name==null||name==""||password==""||password==null) {
+                alert("账号或密码不可为空!")
+                return}
+
+            $.ajax({
+                url:"http://localhost:8080/Course2023_2_13_war_exploded/register",
+                type:"post",
+                data:{
+                    "name":name,
+                    "password":password,
+                    "identify":identify
+                },
+                dataType:"json",
+                success:(res)=>{
+                    console.log(res)
+                    if (res.code==200||res.code=="OK"){
+                        alert("注册成功,您的账号是: "+res.userID+"请前往登录")
+                        window.location.href="http://localhost:8080/Course2023_2_13_war_exploded/HTML/Login.html"
+                    }
+                    else if (res.code==-1){
+                        alert("注册失败，服务器异常，或许已经存在相同用户名")
+                    }
+            },
+                error:(jqXHR, textStatus, errorThrown)=>{
+                    alert("修改失败")
+                    console.log(jqXHR.responseText);
+                    console.log(jqXHR.status);
+                    console.log(jqXHR.readyState);
+                    console.log(jqXHR.statusText);
+
+                    /*弹出其他两个参数的信息*/
+
+                    console.log(textStatus);
+                    console.log(errorThrown);
+                }
+            })
+
+        }
+        function toLog(){
+            window.location.href="http://localhost:8080/Course2023_2_13_war_exploded/HTML/Login.html"
+        }
+
+        function toIndex(){
+            window.location.href="http://localhost:8080/Course2023_2_13_war_exploded"
+        }
+    </script>
+</head>
+<body>
+<div>
+    用户名:<input type="text" id="name"/><br/>
+    密码&nbsp:<input type="password" id="password"/>
+</div>
+<div>
+    身份选择:
+    <select id="selector">
+        <option value="Admin" id="Admin">管理员</option>
+        <option value="User" id="User" selected>普通用户</option>
+        <option value="Vip1" id="VipU1" >VIP I</option>
+        <option value="Vip2" id="VipU2" >VIP II</option>
+        <option value="Vip3" id="VipU3" >VIP III</option>
+    </select>
+</div>
+<div><input type="button" id="SUB" value="注册" onclick="register()"/></div>
+<div><input type="button" id="toLog" value="已有账号？点击登录!" onclick="toLog()"></div>
+
+<div>
+    <input value="返回主页" type="button" id="toIndex" onclick="toIndex()">
+</div>
+</body>
+</html>

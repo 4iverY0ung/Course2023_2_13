@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.L.mapper.OrderMapper">
+    <select id="selectOrderByID" resultType="com.L.pojo.Orders">
+        select *
+        from `Orders`
+        where `OrderID` =#{OrderID}
+    </select>
+
+    <select id="selectOrderByUserID" resultType="com.L.pojo.Orders">
+        select *
+        from `Orders`
+        where `UserID` =#{UserID}
+    </select>
+    <select id="selectOrderByRoomID" resultType="com.L.pojo.Orders">
+        select *
+        from `Orders`
+        where `RoomID` =#{RoomID}
+    </select>
+
+    <update id="updateOrder">
+        update `Orders`
+        set `RoomID`=#{RoomID}, `UserID`=#{UserID}, `Days`=#{Days}
+        where `OrderID`=#{OrderID}
+    </update>
+
+    <delete id="deleteOrder">
+        delete from `Orders` where `OrderID`=#{OrderID}
+    </delete>
+
+    <insert id="insertOrder" parameterType="com.L.pojo.Orders">
+        insert into `Orders`(`UserID`, `RoomID`, `Days`)
+        values (#{UserID},#{RoomID},#{Days})
+    </insert>
+</mapper>

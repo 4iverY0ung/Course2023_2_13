@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SelfCenter</title>
+  <script src="../js/jquery-3.6.0.js" type="text/javascript"></script>
+  <script>
+    $(function (){
+        const isLogIn=sessionStorage.getItem("isLogIn")
+
+        if (isLogIn==1){
+            console.log("LogIn Success")
+            const name=sessionStorage.getItem("name")
+            const id=sessionStorage.getItem("id")
+            const info=sessionStorage.getItem("info")
+            const identify=sessionStorage.getItem("identify")
+            const password=sessionStorage.getItem("password")
+
+
+
+            var i1='<div id="i1" >'+id+'</div>'
+            var n1='<div onclick="onActive()" id="n1" contenteditable="true" v-html="innerText" @input="inputChange" style="resize: both; overflow: auto;">'+name+'</div>'
+            var i2='<div  id="i2" >'+identify+'</div>'
+            var i3='<div onclick="onActive()" id="i3" contenteditable="true" v-html="innerText" @input="inputChange" style="resize: both; overflow: auto;">'+info+'</div>'
+            var p1='<div onclick="onActive()" id="p1" contenteditable="true" v-html="innerText" @input="inputChange" style="resize: both; overflow: auto;">'+password+'</div>'
+
+
+
+
+
+            $("#id").after(i1)
+            $("#name").after(n1)
+            $("#identify").after(i2)
+            $("#info").after(i3)
+            $("#password").after(p1)
+
+        }
+        else {
+            console.log("isLogIn:"+isLogIn)
+            alert("未登录，单击进行重新登录")
+            sessionStorage.setItem("isLogIn",-2)
+            window.location.replace("http://localhost:8080/Course2023_2_13_war_exploded/HTML/Login.html")
+        }
+      //console.log(name)
+    })
+
+    function onActive(){
+        $("#reset").attr("disabled",false);
+    }
+
+    function quit(){
+        $("#i1").remove()
+        $("#i2").remove()
+        $("#i3").remove()
+        $("#p1").remove()
+        $("#n1").remove()
+        $("#reset").attr("disabled",true);
+        setTimeout('alert("未登录，单击进行重新登录")',0)
+        sessionStorage.setItem("isLogIn",-2)
+        window.location.replace("http://localhost:8080/Course2023_2_13_war_exploded/HTML/Login.html")
+    }
+    function reset(){
+        var Nname=$("#n1").text()
+        var Npassword=$("#p1").text()
+        var Nidentify=$("#i2").text()
+        var Ninfo=$("#i3").text()
+        var id=$("#i1").text()
+       // console.log(Nname)
+       // console.log(Npassword)
+
+        $.ajax({
+            url:"http://localhost:8080/Course2023_2_13_war_exploded/reset",
+            type:"post",
+            data:{
+                "name":Nname,
+                "password":Npassword,
+                "identify":Nidentify,
+                "id":id,
+                "info":Ninfo,
+            },
+            dataType:"json",
+
+            success:function (res){
+                if (res.code!=200){
+                    console.log(res)
+                    alert("修改失败")
+                }
+                else {
+                    alert("修改成功，请重新登录")
+                    sessionStorage.setItem("isLogIn",-2)
+                    window.location.replace("http://localhost:8080/Course2023_2_13_war_exploded/HTML/Login.html")
+                }
+            },
+            error:(jqXHR, textStatus, errorThrown)=>{
+                alert("修改失败")
+                console.log(jqXHR.responseText);
+                console.log(jqXHR.status);
+                console.log(jqXHR.readyState);
+                console.log(jqXHR.statusText);
+
+                /*弹出其他两个参数的信息*/
+
+                console.log(textStatus);
+                console.log(errorThrown);
+    }
+    })
+
+
+    }
+    function toIndex(){
+        window.location.href="http://localhost:8080/Course2023_2_13_war_exploded"
+    }
+  </script>
+</head>
+<body>
+
+
+<div id="id">用户ID:</div>
+<div id="name">用户名:  </div>
+<div id="password">用户密码:</div>
+
+<div id="identify">用户身份: </div>
+<div id="info">用户信息: </div>
+<div id="buttons-hbox"><input type="button" id="quit" value="退出" onclick="quit()"/>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+<input type="button" id="reset" value="修改" disabled="disabled" onclick="reset()"/>
+</div>
+
+<div>
+    <input value="返回主页" type="button" id="toIndex" onclick="toIndex()">
+</div>
+</body>
+</html>

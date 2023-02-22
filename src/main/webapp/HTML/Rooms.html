@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Rooms</title>
+    <link rel="stylesheet" type="text/css" href="../css/cssR.css">
+    <script type="text/javascript" src="../js/jquery-3.6.0.js"></script>
+    <script>
+        $(function (){
+            if (sessionStorage.getItem("isLogIn")==-2) {
+
+                alert("您未登录! 点击前往")
+                window.location.replace("http://localhost:8080/Course2023_2_13_war_exploded/HTML/Login.html")
+            }
+
+
+
+            $.ajax({
+                url:"http://localhost:8080/Course2023_2_13_war_exploded/getAllRooms",
+                type:"post",
+                dataType:"json",
+                error:(jqXHR, textStatus, errorThrown)=>{
+                    alert("获取房间信息失败")
+                    console.log(jqXHR.responseText);
+                    console.log(jqXHR.status);
+                    console.log(jqXHR.readyState);
+                    console.log(jqXHR.statusText);
+
+                    /*弹出其他两个参数的信息*/
+
+                    console.log(textStatus);
+                    console.log(errorThrown);
+                },
+                success:(res)=>{
+                    console.log(res)
+                    if (res.code==200){
+                        console.log("Rooms Searched!")
+                        for (var room1 in res.rooms) {
+                            var room=res.rooms[room1]
+                            //console.log(room)
+                            var tr='<tr><td onclick="getInfo()">'+room.roomID+'</td><td>'+room.roomCategory+'</td><td>'+room.roomClass+'</td><td>'+room.price+'</td><td>'+room.roomInfo+'</td></tr>'
+                            $("#Top").append(tr)
+                        }
+
+
+
+                    }
+                    if (res.code==-1){
+                        console.log("Server Searched Failed!")
+                    }
+                }
+            })
+        })
+
+        function getInfo(){
+            $("#submit").attr("disabled",false)
+
+
+            $(".red").attr("class","white")
+            e=window.event
+            //console.log("selectRoomID:"+sessionStorage.getItem("selectRoomID"))
+            $(e.target).attr("class","red")
+            var selectRoomID=$(e.target).text()
+
+            if (sessionStorage.getItem("selectRoomID")==selectRoomID){
+                sessionStorage.setItem("selectRoomID","")
+                return
+            }
+            //console.log("selectRoomID:"+selectRoomID)
+            sessionStorage.setItem("selectRoomID",selectRoomID)
+            //console.log("selectRoomID:"+sessionStorage.getItem("selectRoomID"))
+
+        }
+
+        function reset(){
+            sessionStorage.setItem("selectRoomID","")
+            $(".red").attr("class","white")
+        }
+        function sub(){
+            console.log("selectRoomID:"+sessionStorage.getItem("selectRoomID"))
+            console.log("userID",+sessionStorage.getItem("id"))
+
+            var roomId=sessionStorage.getItem("selectRoomID")
+            var userId=sessionStorage.getItem("id")
+            var days=$("#days").val()
+            if (days==null){
+                alert("请选择天数")
+                return
+            }
+
+            $.ajax({
+                url:"http://localhost:8080/Course2023_2_13_war_exploded/insertOrder",
+                type: "post",
+                data:{
+                    "roomID":roomId,
+                    "userID":userId,
+                    "days":days
+                },
+                dataType: "json",
+                success:(res)=>{
+                    console.log(res)
+                    if (res.code =="Success"){
+                        console.log("Success")
+                        alert("预定成功!")
+                    }
+                    else if (res.code =="Ordered"){
+                        alert("房间已被预定!")
+                    }
+                    else if (res.code == "Error"){
+                        alert("预定失败，服务器错误")
+                    }
+                },
+                error:(jqXHR, textStatus, errorThrown)=>{
+                    alert("向服务器发送请求失败")
+                    console.log(jqXHR.responseText);
+                    console.log(jqXHR.status);
+                    console.log(jqXHR.readyState);
+                    console.log(jqXHR.statusText);
+
+                    /*弹出其他两个参数的信息*/
+
+                    console.log(textStatus);
+                    console.log(errorThrown);
+                }
+            })
+
+        }
+
+        function toIndex(){
+            window.location.href="http://localhost:8080/Course2023_2_13_war_exploded"
+        }
+
+        function getCC(){
+            $("#price").hide()
+            $("#CC").show()
+        }
+        function getP(){
+            $("#CC").hide()
+            $("#price").show()
+        }
+
+        function setSearch(){
+            var v=$("#s").val()
+            if (v=="b"){getCC()}
+            if (v=="c"){getP()}
+            if (v=="a"){
+                $("#CC").hide()
+                $("#price").hide()
+            }
+        }
+
+
+        function getByCC(){
+            var category=$("#category").val()
+            var rclass=$("#rclass").val()
+            console.log(category+rclass)
+            //
+            $("#Top").remove()
+            var T='<table id="Top"><tr> <td>房间号</td><td>房间类型</td> <td>房间等级</td> <td>房间价格</td> <td>房间信息</td></tr></table>'
+            $("#start").after(T)
+            //
+            $.ajax({
+
+                url:"http://localhost:8080/Course2023_2_13_war_exploded/getRoomsCC",
+                type:"post",
+                data: {
+                    "category":category,
+                    "rclass":rclass
+                },
+                dataType:"json",
+                error:(jqXHR, textStatus, errorThrown)=>{
+                    alert("获取房间信息失败")
+                    console.log(jqXHR.responseText);
+                    console.log(jqXHR.status);
+                    console.log(jqXHR.readyState);
+                    console.log(jqXHR.statusText);
+
+                    /*弹出其他两个参数的信息*/
+
+                    console.log(textStatus);
+                    console.log(errorThrown);
+                },
+                success:(res)=>{
+                    console.log(res)
+                    if (res.code==200){
+                        console.log("Rooms Searched!")
+                        for (var room1 in res.rooms) {
+                            var room=res.rooms[room1]
+                            //console.log(room)
+                            var tr='<tr><td onclick="getInfo()">'+room.roomID+'</td><td>'+room.roomCategory+'</td><td>'+room.roomClass+'</td><td>'+room.price+'</td><td>'+room.roomInfo+'</td></tr>'
+                            $("#Top").append(tr)
+                        }
+
+
+
+                    }
+                    if (res.code==-1){
+                        console.log("Server Searched Failed!")
+                    }
+                }
+
+
+            })
+
+        }
+
+        function getByPrice(){
+            var lowPrice=$("#lowP").val()
+            var highPrice=$("#highP").val()
+
+            $("#Top").remove()
+            var T='<table id="Top"><tr> <td>房间号</td><td>房间类型</td> <td>房间等级</td> <td>房间价格</td> <td>房间信息</td></tr></table>'
+            $("#start").after(T)
+
+            $.ajax({
+
+
+                url:"http://localhost:8080/Course2023_2_13_war_exploded/getRoomsPrice",
+                type:"post",
+                data: {
+                    "lowPrice":lowPrice,
+                    "highPrice":highPrice
+                },
+                dataType:"json",
+                error:(jqXHR, textStatus, errorThrown)=>{
+                    alert("获取房间信息失败")
+                    console.log(jqXHR.responseText);
+                    console.log(jqXHR.status);
+                    console.log(jqXHR.readyState);
+                    console.log(jqXHR.statusText);
+
+                    /*弹出其他两个参数的信息*/
+
+                    console.log(textStatus);
+                    console.log(errorThrown);
+                },
+                success:(res)=>{
+                    console.log(res)
+                    if (res.code==200){
+                        console.log("Rooms Searched!")
+                        for (var room1 in res.rooms) {
+                            var room=res.rooms[room1]
+                            //console.log(room)
+                            var tr='<tr><td onclick="getInfo()">'+room.roomID+'</td><td>'+room.roomCategory+'</td><td>'+room.roomClass+'</td><td>'+room.price+'</td><td>'+room.roomInfo+'</td></tr>'
+                            $("#Top").append(tr)
+                        }
+
+
+
+                    }
+                    if (res.code==-1){
+                        console.log("Server Searched Failed!")
+                    }
+                }
+
+
+
+            })
+        }
+
+    </script>
+</head>
+
+<body>
+<div>
+    房间筛选条件
+    <select id="s" onchange="setSearch()">
+        <option value="a">全部房间</option>
+        <option value="b">类型等级</option>
+        <option value="c">价格区间</option>
+    </select>
+</div>
+
+<div id="CC" hidden="hidden">
+    类型选择
+    <select id="category">
+        <option value="Single Room">单人间</option>
+        <option value="Double Room">双人间</option>
+        <option value="Triple Room">三人间</option>
+        <option value="Extravagant Suite">豪华套房</option>
+        <option value="President Suite">总统套房</option>
+    </select>
+
+    等级选择
+    <select id="rclass">
+        <option value="Class">标准</option>
+        <option value="Normal">普通</option>
+        <option value="Special">特别</option>
+        <option value="Ultimate">顶级</option>
+    </select>
+
+    <input type="button" value="检索" onclick="getByCC()">
+</div>
+
+<div id="price" hidden="hidden">
+    价格区间
+    <div>
+        最低价格<input type="number" id="lowP">
+        最高价格<input type="number" id="highP">
+    </div>
+
+    <input type="button" value="检索" onclick="getByPrice()">
+</div>
+
+
+
+<div id="start">房间信息如下</div>
+<table id="Top">
+    <tr>
+        <td>房间号</td>
+        <td>房间类型</td>
+        <td>房间等级</td>
+        <td>房间价格</td>
+        <td>房间信息</td>
+    </tr>
+</table>
+<div>
+    预定的天数:<input type="number" id="days">
+</div>
+<div>
+    <input type="button" id="reset" value="重置选择" onclick="reset()"/>&emsp;&emsp;&emsp;&emsp;
+    <input type="button" id="submit" value="预定" onclick="sub()" disabled="disabled">
+</div>
+
+<div>
+    <input value="返回主页" type="button" id="toIndex" onclick="toIndex()">
+</div>
+</body>
+</html>

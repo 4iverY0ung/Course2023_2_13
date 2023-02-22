@@ -1,0 +1,38 @@
+<html>
+<head>
+    <meta content="text/html" charset="UTF-8" http-equiv="Content-Type">
+    <script type="text/javascript" src="../js/jquery-3.6.0.js"></script>
+    <!--<script nomodule defer src="../js/js.cookie.js"></script>-->
+    <script>
+      window.onload=function (){
+         if (sessionStorage.getItem("isLogIn")==undefined||sessionStorage.getItem("isLogIn")==null||sessionStorage.getItem("isLogIn")==""){
+             sessionStorage.setItem("isLogIn",-2)
+             sessionStorage.setItem("id",-1)
+             console.log(sessionStorage.getItem("isLogIn"))
+         }
+         else {
+             console.log("Logged")
+             console.log(sessionStorage.getItem("isLogIn"))
+         }
+      }
+          //document.cookie="isL=N"
+          //console.log(document.cookie)
+
+
+         // $.cookie('isL',-2)
+        //  console.log($.cookie('isL'))
+
+
+    </script>
+</head>
+<body>
+<h2>简易的酒店预定管理系统</h2>
+
+<a href="http://localhost:8080/Course2023_2_13_war_exploded/HTML/Login.html">登录</a>
+<a href="http://localhost:8080/Course2023_2_13_war_exploded/HTML/Register.html">注册</a>
+<a href="http://localhost:8080/Course2023_2_13_war_exploded/HTML/SelfCenter.html">个人中心</a>
+<a href="http://localhost:8080/Course2023_2_13_war_exploded/HTML/Rooms.html">预定房间</a>
+<a href="http://localhost:8080/Course2023_2_13_war_exploded/HTML/SelfOperate.html">预定记录</a>
+
+</body>
+</html>

@@ -1,0 +1,175 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http:www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title>Login</title>
+    <meta content="text/html" charset="UTF-8" http-equiv="Content-Type">
+    <script src="../js/jquery-3.6.0.js" type="text/javascript"></script>
+    <script src="https://cdn.bootcss.com/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+    <script>
+        $(function () {
+
+
+            /**/
+            if (sessionStorage.getItem("isLogIn")!=-2) {
+
+                alert("您已经登录过了!")
+                window.location.replace("http://localhost:8080/Course2023_2_13_war_exploded/HTML/SelfCenter.html")
+            }
+
+
+
+
+/*
+
+            if ($.cookie('isL')!=-2) {
+
+                alert("您已经登录过了!"+$.cookie('isL'))
+                window.location.replace("http://localhost:8080/Course2023_2_13_war_exploded/HTML/SelfCenter.html")
+            }
+        */
+
+
+            var realCode = ''
+            var codeImg = ''
+            $.ajax({
+                url: "http://localhost:8080/Course2023_2_13_war_exploded/validateCode",
+                type: "post",
+                //contentType:"application/json;charset=UTF-8",
+                dataType: "json",
+                success: function (res) {
+                    console.log(res)
+                    realCode = res.realCode
+                    codeImg = res.codeImg
+                    $("#codeImg").attr("src", codeImg)
+                    sessionStorage.setItem("realCode",realCode)
+                },
+                error: function () {
+                    console.log("Validate Code Response Failed")
+                }
+            })
+
+
+            //$("#SUB").click()
+
+
+        })
+
+        function sub() {
+            var code = $("#validateCode").val()
+            var name = $("#name").val()
+            var password = $("#password").val()
+            var realCode=sessionStorage.getItem("realCode")
+
+            if (realCode != code) {
+                alert("输入验证码错误")
+                return
+            }
+
+            $.ajax({
+                url: "http://localhost:8080/Course2023_2_13_war_exploded/login6",
+                type: "post",
+                data: {name: name, password: password},
+                dataType: 'json',
+                success: function (res) {
+                    console.log(res)
+                    if (res.code == 200) {
+                        console.log("User LogIN!")
+                        var name = res.name
+                        var info = res.info
+                        var identify = res.identify
+                        var id = res.id
+                        var isLogIn = res.isLogIn
+                        var password = res.password
+                        alert("Welcome!")
+                        sessionStorage.setItem("name", name)
+                        sessionStorage.setItem("info", info)
+                        sessionStorage.setItem("identify", identify)
+                        sessionStorage.setItem("id", id)
+                        sessionStorage.setItem("password", password)
+                        sessionStorage.setItem("isLogIn", isLogIn)
+
+                        window.location.href = "http://localhost:8080/Course2023_2_13_war_exploded/HTML/SelfCenter.html"
+
+                    }
+                    if (res.code == -1) {
+                        console.log("No User Found!")
+                        alert("输入用户名或密码错误!")
+                        $("#name").val("")
+                        $("#password").val("")
+
+                    }
+                }
+            })
+        }
+        function toReg(){
+            window.location.href="http://localhost:8080/Course2023_2_13_war_exploded/HTML/Register.html"
+        }
+
+        function toIndex(){
+            window.location.href="http://localhost:8080/Course2023_2_13_war_exploded"
+        }
+    </script>
+</head>
+<body>
+<!--
+<script type="text/javascript">
+    function onLogin(){
+        var name=document.getElementById("name").value
+        var password=document.getElementById("password").value
+        var jsons='{"name":"'+name+'","password":"'+password+'"}'
+        console.log(jsons)
+        $.ajax({
+            uri:"http://localhost:8080/Course2023_2_13_war_exploded/login6",
+            type:"post",
+            contentType:"application/json;charset=UTF-8",
+           // data:JSON.parse(jsons),
+            data:{name:name,password:password},
+            dataType:"json",
+            success:(result)=>{
+                console.log("Ajax Success")
+                if (result!=null){
+                    console.log(result)
+                }
+                else console.log("RESULT　IS NULL")
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                /*弹出jqXHR对象的信息*/
+                alert(jqXHR.responseText);
+                alert(jqXHR.status);
+                alert(jqXHR.readyState);
+                alert(jqXHR.statusText);
+                /*弹出其他两个参数的信息*/
+                alert(textStatus);
+                alert(errorThrown);
+            },
+
+            //data:$("#form1").serialize()
+        })
+    }
+</script>
+-->
+
+
+<div>
+    用户名\账号:<input type="text" id="name"/><br/>
+    密码&nbsp:<input type="password" id="password"/>
+</div>
+<div>
+    请输入验证码:<input type="text" id="validateCode">
+    <img id="codeImg" src="" height="80px"/>
+</div>
+
+<div>
+    <input value="登录" type="button" id="SUB" onclick="sub()"/>
+</div>
+
+<div>
+    <input value="还未拥有账号？点击注册!" type="button" id="toReg" onclick="toReg()">
+</div>
+
+<div>
+    <input value="返回主页" type="button" id="toIndex" onclick="toIndex()">
+</div>
+
+</body>
+</html>

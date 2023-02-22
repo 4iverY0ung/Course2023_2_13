@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.L.mapper.UserMapper">
+
+    <resultMap id="userMap" type="com.L.pojo.Users">
+        <id property="UserId" column="ID"/>
+        <result property="UserName" column="UserName"/>
+        <result column="UserPassword" property="UserPassword"/>
+        <result column="Identify" property="UserIdentify"/>
+        <result column="Info" property="UserInfo"/>
+    </resultMap>
+
+
+    <insert id="insertUser" parameterType="com.L.pojo.Users">
+        insert into `Users`
+        values (null, #{UserName}, #{UserPassword}, #{UserIdentify}, #{UserInfo})
+    </insert>
+
+
+    <insert id="insertUser2" parameterType="com.L.pojo.Users">
+        insert into `Users`(`ID`, `UserName`, `UserPassword`, `Identify`, `Info`)
+        values (#{UserId}, #{UserName}, #{UserPassword}, #{UserIdentify}, #{UserInfo})
+    </insert>
+
+    <delete id="deleteUserById">
+        delete
+        from `Users`
+        where `ID` = #{id}
+    </delete>
+
+
+    <select id="selectUser" resultMap="userMap">
+        select *
+        from `Users`
+        where `UserName` = #{userName}
+          and `UserPassword` = #{userPassword}
+    </select>
+
+
+    <select id="selectUserByNI" resultMap="userMap">
+        select *
+        from `Users`
+        where `UserName` = #{userName}
+          and `Identify` = #{userIdentify}
+    </select>
+
+
+    <select id="selectUserID" resultMap="userMap">
+        select *
+        from `Users`
+        where `ID` = #{userID}
+    </select>
+
+
+    <update id="resetUser">
+        update `Users`
+        set `UserName`=#{userName},
+            `UserPassword`=#{userPassword},
+            `Identify`=#{userIdentify},
+            `Info`=#{userInfo}
+        where `ID` = #{userId}
+    </update>
+</mapper>

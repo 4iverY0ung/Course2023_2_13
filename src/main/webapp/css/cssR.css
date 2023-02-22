@@ -1,0 +1,15 @@
+ .red {
+     background:red;
+ }
+ .white {
+     background:white;
+ }
+ .d {
+     width: 150px;
+     height: 50px;
+     float: left;
+ }
+
+ .f {
+     display: flex;
+ }
