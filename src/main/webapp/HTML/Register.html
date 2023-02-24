@@ -7,6 +7,12 @@
     <script type="text/javascript">
         $(function (){
 
+            if (sessionStorage.getItem("isLogIn")!=-2) {
+
+                alert("您已经登录过了! 请退出后再注册新账号")
+                window.location.replace("http://localhost:8080/Course2023_2_13_war_exploded/HTML/SelfCenter.html")
+            }
+
         })
 
         function register(){

@@ -83,8 +83,12 @@
             var roomId=sessionStorage.getItem("selectRoomID")
             var userId=sessionStorage.getItem("id")
             var days=$("#days").val()
-            if (days==null){
+            if (days==null||days==""||days<=0){
                 alert("请选择天数")
+                return
+            }
+            if (roomId==""||roomId==null||roomId==undefined){
+                alert("请重新选择")
                 return
             }
 
@@ -102,12 +106,15 @@
                     if (res.code =="Success"){
                         console.log("Success")
                         alert("预定成功!")
+                        window.location.reload()
                     }
                     else if (res.code =="Ordered"){
                         alert("房间已被预定!")
+                        window.location.reload()
                     }
                     else if (res.code == "Error"){
                         alert("预定失败，服务器错误")
+                        window.location.reload()
                     }
                 },
                 error:(jqXHR, textStatus, errorThrown)=>{
@@ -283,8 +290,8 @@
 
     等级选择
     <select id="rclass">
-        <option value="Class">标准</option>
-        <option value="Normal">普通</option>
+        <option value="Class">经济</option>
+        <option value="Normal">标准</option>
         <option value="Special">特别</option>
         <option value="Ultimate">顶级</option>
     </select>
